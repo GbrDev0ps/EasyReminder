@@ -1,12 +1,11 @@
 import logging
+import os
 from telegram.ext import Application, CommandHandler, MessageHandler, filters
 from db import init_db, save_reminder, list_reminders, delete_reminder
 from scheduler import schedule_reminder
 from parser import parse_reminder
 
-logging.basicConfig(level=logging.INFO)
-
-TOKEN = "8515213800:AAHPqwGqiE6ww6nbU9BwuKPtSzdHxaAO-OU"
+TOKEN = os.getenv("TOKEN")
 
 async def start(update, context):
     await update.message.reply_text(
