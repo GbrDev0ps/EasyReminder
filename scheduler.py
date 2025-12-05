@@ -2,7 +2,6 @@ from datetime import datetime
 
 def schedule_reminder(reminder_id, user_id, text, remind_at, application):
 
-    # Converter string para datetime, se necessário
     if isinstance(remind_at, str):
         remind_at = datetime.fromisoformat(remind_at)
 
@@ -12,8 +11,7 @@ def schedule_reminder(reminder_id, user_id, text, remind_at, application):
             text=f"🔔 Lembrete:\n{text}"
         )
 
-    # Agenda o job
-    application.job_queue.run_once(
+    application.job_queue.run_at(
         send_reminder,
         when=remind_at,
         name=str(reminder_id)
