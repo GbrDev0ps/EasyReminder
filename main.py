@@ -69,7 +69,9 @@ def main():
     app.add_handler(CommandHandler("listar", listar))
     app.add_handler(CommandHandler("cancelar", cancelar))
 
+    print("Bot online com JobQueue ativa!")
     app.run_polling()
+
 
 if __name__ == "__main__":
     main()

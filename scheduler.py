@@ -1,23 +1,16 @@
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from datetime import datetime
-from db import delete_reminder
 
-scheduler = AsyncIOScheduler()
-scheduler.start()
+def schedule_reminder(reminder_id, user_id, text, remind_at, application):
+    # Converte string para datetime se necessário
+    if isinstance(remind_at, str):
+        remind_at = datetime.fromisoformat(remind_at)
 
-def schedule_reminder(reminder_id, user_id, text, remind_at, app):
-    remind_datetime = datetime.fromisoformat(remind_at)
+    async def send_reminder(context):
+        await context.bot.send_message(chat_id=user_id, text=f"🔔 Lembrete:\n{text}")
 
-    scheduler.add_job(
-        send_notification,
-        "date",
-        run_date=remind_datetime,
-        args=[reminder_id, user_id, text, app]
+    # Agenda a tarefa
+    application.job_queue.run_once(
+        send_reminder,
+        when=remind_at,
+        name=str(reminder_id)
     )
-
-async def send_notification(reminder_id, user_id, text, app):
-    await app.bot.send_message(
-        chat_id=user_id,
-        text=f"🔔 Lembrete:\n{text}"
-    )
-    delete_reminder(reminder_id)
