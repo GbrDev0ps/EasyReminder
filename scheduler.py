@@ -17,7 +17,7 @@ def schedule_reminder(reminder_id, user_id, text, remind_at, application):
         delay_seconds = 1
 
     # Agenda o lembrete em X segundos
-    application.job_queue.run_once(
+    application.job_queue.run_once()
         send_reminder,
         when=delay_seconds,
         name=str(reminder_id)
