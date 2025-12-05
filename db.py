@@ -1,8 +1,13 @@
 import sqlite3
-from datetime import datetime
+import os
+
+# Railway: persistência apenas dentro de /data
+DB_PATH = "/data/reminders.db"
 
 def connect():
-    return sqlite3.connect("reminders.db")
+    # Garante que a pasta /data existe
+    os.makedirs("/data", exist_ok=True)
+    return sqlite3.connect(DB_PATH, check_same_thread=False)
 
 def init_db():
     with connect() as con:
@@ -28,7 +33,10 @@ def save_reminder(user_id, text, remind_at):
 def list_reminders(user_id):
     with connect() as con:
         cur = con.cursor()
-        cur.execute("SELECT * FROM reminders WHERE user_id = ?", (user_id,))
+        cur.execute(
+            "SELECT id, text, remind_at FROM reminders WHERE user_id = ?",
+            (user_id,)
+        )
         return cur.fetchall()
 
 def delete_reminder(reminder_id):

@@ -8,9 +8,16 @@ def schedule_reminder(reminder_id, user_id, text, remind_at, application):
     async def send_reminder(context):
         await context.bot.send_message(chat_id=user_id, text=f"🔔 Lembrete:\n{text}")
 
-    # Agenda a tarefa
+    # Calcula quanto tempo falta
+    now = datetime.now()
+    delay_seconds = (remind_at - now).total_seconds()
+
+    if delay_seconds <= 0:
+        # Se a hora já passou, dispara instantaneamente
+        delay_seconds = 1
+
+    # Agenda o lembrete em X segundos
     application.job_queue.run_once(
         send_reminder,
-        when=remind_at,
+        when=delay_seconds,
         name=str(reminder_id)
-    )
